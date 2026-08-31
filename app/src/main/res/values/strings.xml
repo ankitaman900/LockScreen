@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lock Screen</string>
+
+    <!-- Shown under the PIN dots. -->
+    <string name="instruction">Think of a number and enter it</string>
+    <string name="enter_pin">Enter PIN</string>
+
+    <!-- Content descriptions for accessibility (TalkBack). -->
+    <string name="cd_lock">Locked</string>
+    <string name="cd_backspace">Delete last digit</string>
+    <string name="cd_submit">Submit</string>
+    <string name="cd_digit">Digit %1$s</string>
+</resources>
