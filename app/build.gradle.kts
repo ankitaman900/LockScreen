@@ -63,4 +63,5 @@ dependencies {
 
     // Plain JVM unit tests for the attempt logic – no device required.
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
 }

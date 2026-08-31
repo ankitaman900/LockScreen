@@ -40,23 +40,26 @@ import com.example.lockscreen.ui.theme.GlassPressed
 import com.example.lockscreen.ui.theme.GlassStroke
 import com.example.lockscreen.ui.theme.Ink
 
-/** The three digit rows; the fourth row is backspace / 0 / submit. */
+/** The three digit rows; the fourth row is a blank, 0 and backspace. */
 private val DIGIT_ROWS = listOf("123", "456", "789")
 
 /**
  * The numeric PIN pad.
  *
- * It is fully responsive: the circular buttons are sized from the width the
- * parent gives us and clamped to a comfortable range, so the same code looks
- * right on a small phone, a large phone and a tablet.
+ * There is no confirm button: a fixed-length PIN submits itself once the last
+ * digit lands, which is how the real thing behaves. The bottom row therefore
+ * matches a system keypad exactly - an empty cell, zero, then backspace.
+ *
+ * Fully responsive: the circular buttons are sized from the width the parent
+ * gives us and clamped to a comfortable range, so the same code looks right on
+ * a small phone, a large phone and a tablet.
  */
 @Composable
 fun Keypad(
     onDigit: (Char) -> Unit,
     onBackspace: () -> Unit,
-    onSubmit: () -> Unit,
-    submitEnabled: Boolean,
     enabled: Boolean,
+    showBackspace: Boolean,
     modifier: Modifier = Modifier
 ) {
     BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
@@ -85,24 +88,13 @@ fun Keypad(
                 }
             }
 
-            // Last row: delete – 0 – submit.
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                KeypadButton(
-                    size = buttonSize,
-                    enabled = enabled,
-                    filled = false,
-                    contentDescription = stringResource(R.string.cd_backspace),
-                    onClick = onBackspace
-                ) {
-                    BackspaceGlyph(
-                        modifier = Modifier.size(buttonSize * 0.38f),
-                        color = Ink
-                    )
-                }
+                // Empty cell, so 0 stays centred under 8.
+                Box(modifier = Modifier.size(buttonSize))
 
                 DigitButton(
                     digit = '0',
@@ -111,17 +103,23 @@ fun Keypad(
                     onClick = { onDigit('0') }
                 )
 
-                KeypadButton(
-                    size = buttonSize,
-                    enabled = enabled && submitEnabled,
-                    filled = true,
-                    contentDescription = stringResource(R.string.cd_submit),
-                    onClick = onSubmit
-                ) {
-                    SubmitGlyph(
-                        modifier = Modifier.size(buttonSize * 0.40f),
-                        color = Ink
-                    )
+                // Backspace only appears once there is something to delete,
+                // which is another detail borrowed from real lock screens.
+                if (showBackspace) {
+                    KeypadButton(
+                        size = buttonSize,
+                        enabled = enabled,
+                        filled = false,
+                        contentDescription = stringResource(R.string.cd_backspace),
+                        onClick = onBackspace
+                    ) {
+                        BackspaceGlyph(
+                            modifier = Modifier.size(buttonSize * 0.38f),
+                            color = Ink
+                        )
+                    }
+                } else {
+                    Box(modifier = Modifier.size(buttonSize))
                 }
             }
         }
@@ -196,7 +194,11 @@ private fun KeypadButton(
             .scale(scale)
             .alpha(if (enabled) 1f else 0.35f)
             .background(color = background, shape = CircleShape)
-            .border(width = if (filled) 1.dp else 0.dp, color = if (filled) GlassStroke else Color.Transparent, shape = CircleShape)
+            .border(
+                width = if (filled) 1.dp else 0.dp,
+                color = if (filled) GlassStroke else Color.Transparent,
+                shape = CircleShape
+            )
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,

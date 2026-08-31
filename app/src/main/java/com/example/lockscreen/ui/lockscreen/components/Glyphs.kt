@@ -205,28 +205,34 @@ fun BackspaceGlyph(
     }
 }
 
-/** Submit: a right-pointing arrow. */
+/** A telephone handset, for the "Emergency call" label. */
 @Composable
-fun SubmitGlyph(
+fun PhoneGlyph(
     modifier: Modifier = Modifier,
     color: Color = Ink
 ) {
     Canvas(modifier) {
         val w = size.width
         val h = size.height
-        val stroke = w * 0.09f
+        val stroke = w * 0.16f
 
-        drawLine(color, Offset(w * 0.14f, h / 2f), Offset(w * 0.82f, h / 2f), stroke, StrokeCap.Round)
-
-        val head = Path().apply {
-            moveTo(w * 0.56f, h * 0.24f)
-            lineTo(w * 0.86f, h * 0.50f)
-            lineTo(w * 0.56f, h * 0.76f)
+        // A rounded "L" sweep reads as a handset at small sizes.
+        val handset = Path().apply {
+            moveTo(w * 0.16f, h * 0.14f)
+            cubicTo(w * 0.16f, h * 0.62f, w * 0.38f, h * 0.86f, w * 0.86f, h * 0.86f)
+            lineTo(w * 0.86f, h * 0.62f)
+            lineTo(w * 0.60f, h * 0.54f)
+            lineTo(w * 0.48f, h * 0.68f)
+            cubicTo(w * 0.38f, h * 0.60f, w * 0.34f, h * 0.52f, w * 0.30f, h * 0.44f)
+            lineTo(w * 0.44f, h * 0.32f)
+            lineTo(w * 0.36f, h * 0.14f)
+            close()
         }
+        drawPath(path = handset, color = color)
         drawPath(
-            path = head,
+            path = handset,
             color = color,
-            style = Stroke(width = stroke, join = StrokeJoin.Round, cap = StrokeCap.Round)
+            style = Stroke(width = stroke * 0.25f, join = StrokeJoin.Round, cap = StrokeCap.Round)
         )
     }
 }

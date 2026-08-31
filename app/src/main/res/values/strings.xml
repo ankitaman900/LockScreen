@@ -2,13 +2,30 @@
 <resources>
     <string name="app_name">Lock Screen</string>
 
-    <!-- Shown under the PIN dots. -->
-    <string name="instruction">Think of a number and enter it</string>
+    <!-- Prompt above the PIN dots / pattern grid. -->
     <string name="enter_pin">Enter PIN</string>
+    <string name="draw_pattern">Draw pattern</string>
+
+    <!-- The decoy at the bottom. A long press on it opens the reveal. -->
+    <string name="emergency_call">Emergency call</string>
+
+    <!-- Hidden settings panel. -->
+    <string name="picker_title">UNLOCK STYLE</string>
+    <string name="mode_pin_4">4-digit PIN</string>
+    <string name="mode_pin_6">6-digit PIN</string>
+    <string name="mode_pattern">Pattern</string>
+    <string name="picker_clear">Clear saved entries</string>
+
+    <!-- Hidden reveal. -->
+    <string name="reveal_title">RECENT ENTRIES</string>
+    <string name="reveal_last">Last</string>
+    <string name="reveal_previous">Before that</string>
+    <string name="reveal_empty">Nothing recorded yet.</string>
+    <string name="reveal_dismiss_hint">Tap anywhere to close</string>
 
     <!-- Content descriptions for accessibility (TalkBack). -->
     <string name="cd_lock">Locked</string>
     <string name="cd_backspace">Delete last digit</string>
-    <string name="cd_submit">Submit</string>
     <string name="cd_digit">Digit %1$s</string>
+    <string name="cd_hidden_settings">Settings</string>
 </resources>

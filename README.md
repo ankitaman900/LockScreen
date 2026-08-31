@@ -12,20 +12,44 @@ inside its own window.
 
 ## What it does
 
-The screen asks you to *think of a number and enter it*. The number you type is
-**never read, compared or validated**. Only the number of submissions matters:
+The screen looks and behaves like an ordinary lock screen. Whatever is entered
+is **never read, compared or validated**. Only the number of submissions matters:
 
-| Submit press | What happens |
+| Submission | What happens |
 | --- | --- |
-| 1st | Input clears, a short shake, you stay on the lock screen |
+| 1st | Entry clears, a short shake, you stay on the lock screen |
 | 2nd | Same |
 | 3rd | Same |
 | 4th | Brief unlock animation, then the app closes and you land on your normal home screen |
 
 No "wrong password" text, no dialog, no toast, no success message, no extra
-screens — exactly as specified.
+screens.
 
----
+### The two hidden controls
+
+**Top-left corner — unlock style.** A transparent 100 x 56 dp strip in the very
+top-left corner (over the status bar area, where nothing else is tappable). A
+single tap opens a panel offering **4-digit PIN**, **6-digit PIN** or
+**Pattern**, plus **Clear saved entries**. The choice is remembered across
+launches.
+
+**"Emergency call" — the reveal.** The label at the bottom is a decoy: tapping it
+does nothing at all. **Long-press** it and a card shows the last two entries that
+were submitted, newest first. This does not count as an attempt.
+
+Because the app closes itself on the fourth attempt, the entries are saved to the
+app's private storage — otherwise they would be gone before they could be read
+back. Nothing leaves the device (the app has no network permission), and "Clear
+saved entries" wipes the file.
+
+### Entry styles
+
+* **4-digit / 6-digit PIN** — the entry submits itself the moment the last digit
+  lands, exactly like a real fixed-length PIN screen. There is no confirm
+  button; backspace only appears once there is something to delete.
+* **Pattern** — a 3x3 grid. Dragging across an unselected dot on the way between
+  two others picks it up too, like the system pattern lock. Lifting the finger
+  submits. A pattern is recorded as one-based dot numbers, e.g. `1-2-3-6`.
 
 ## Project structure
 
@@ -43,7 +67,11 @@ LockScreen/
         │   ├── java/com/example/lockscreen/
         │   │   ├── MainActivity.kt         Edge-to-edge window + exit-to-home
         │   │   ├── domain/
-        │   │   │   └── UnlockAttempts.kt   Pure Kotlin attempt rule
+        │   │   │   ├── UnlockAttempts.kt   Pure Kotlin attempt rule
+        │   │   │   ├── UnlockMode.kt       4-digit / 6-digit / pattern
+        │   │   │   └── AttemptHistory.kt   Recent-entry store (interface)
+        │   │   ├── data/
+        │   │   │   └── PrefsAttemptHistory.kt  SharedPreferences implementation
         │   │   └── ui/
         │   │       ├── theme/              Colors, typography, Material 3 theme
         │   │       └── lockscreen/
@@ -140,9 +168,13 @@ launcher. No permission, no `Intent` to the home screen, no background service.
   Remove the `LockScreenHost` wrapper if you would rather Back closed the app.
 * **Number of attempts** — change `ATTEMPTS_BEFORE_EXIT` in
   `domain/UnlockAttempts.kt`.
+* **Hidden zone size / position** — the `Box` aligned `TopStart` at the end of
+  `LockScreenContent` in `ui/lockscreen/LockScreen.kt`.
+* **How many entries are remembered** — `MAX_ENTRIES` in
+  `domain/AttemptHistory.kt`.
+* **Minimum pattern length** — `MIN_PATTERN_DOTS` in `domain/UnlockMode.kt`.
 * **Colours / wallpaper** — `ui/theme/Color.kt` and
   `components/LockWallpaper.kt`. The wallpaper is 100 % procedural, so there is
   no image to swap out; edit the gradient stops and blooms instead.
-* **Max PIN length** — `MAX_PIN_LENGTH` in `LockScreenViewModel.kt`.
 * **12 / 24-hour clock and the date format** follow the device settings and
   locale automatically.
